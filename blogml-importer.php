@@ -94,7 +94,7 @@ class BlogML_Import {
 		if (!(in_array($author, $this->blogmlnames))) { //a new blogml author name is found
 			++ $this->j;
 			$this->blogmlnames[$this->j] = $author; //add that new blogml author name to an array
-			$user_id = username_exists($this->newauthornames[$this->j]); //check if the new author name defined by the user is a pre-existing wp user
+			$user_id = username_exists($author); //check if the new author name defined by the user is a pre-existing wp user
 			if (!$user_id) { //banging my head against the desk now.
 				if ($this->newauthornames[$this->j] == 'left_blank') { //check if the user does not want to change the authorname
 					$user_id = wp_create_user($author, $pass);
@@ -106,8 +106,7 @@ class BlogML_Import {
 				return $user_id; // return pre-existing wp username if it exists
 			}
 		} else {
-			$key = array_search($author, $this->blogmlnames); //find the array key for $author in the $blogmlnames array
-			$user_id = username_exists($this->newauthornames[$key]); //use that key to get the value of the author's name from $newauthornames
+			$user_id = username_exists($author); //use that key to get the value of the author's name from $newauthornames
 		}
 
 		return $user_id;
@@ -375,7 +374,7 @@ class BlogML_Import {
 			if (count($categories) > 0) {
 				$post_cats = array();
 				foreach ($categories as $category) {
-					$cat_ID = (int) $wpdb->get_var("SELECT term_id FROM $wpdb->terms WHERE name = '$category'");
+					$cat_ID = (int) $wpdb->get_var("SELECT $wpdb->terms.term_id FROM $wpdb->terms LEFT JOIN $wpdb->term_taxonomy ON $wpdb->terms.term_id = $wpdb->term_taxonomy.term_id WHERE $wpdb->terms.name = '$category' AND $wpdb->term_taxonomy.taxonomy = 'category'");
 					if ($cat_ID == 0) {
 						$cat_ID = wp_insert_category(array('cat_name' => $category));
 					}
