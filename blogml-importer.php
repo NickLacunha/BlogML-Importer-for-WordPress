@@ -339,6 +339,8 @@ class BlogML_Import {
 		$cat_results = $this->xPath->match("categories/category", $post);
 		$cat_count = count($cat_results);
 		for ($cat_index = 0; $cat_index < $cat_count; $cat_index++) {
+            /* the data I'm looking at has ref being an identifier for a
+            list of categories defined at a higher level in the tree structure, so this isn't quite right. */
 			$categories[$cat_index] = $wpdb->escape($this->xPath->getAttributes($cat_results[$cat_index], 'ref'));
 		}
 
