@@ -333,7 +333,7 @@ class BlogML_Import {
 		$post_content = $wpdb->escape(str_replace(array ('<![CDATA[', ']]>'), '',$post_content));
 		
         // Added to convert ampersand codes to their ascii equivalents so HTML is imported as-is
-        $post_content = htmlentities($post_content);
+        $post_content = html_entity_decode($post_content);
         
 		$categories = array ();
 		$cat_results = $this->xPath->match("categories/category", $post);
